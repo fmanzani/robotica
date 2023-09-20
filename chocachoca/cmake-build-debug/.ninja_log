@@ -1,0 +1,24 @@
+# ninja log v5
+0	386	0	src/CMakeFiles/ICES__home_usuario_robocomp_components_grupo3-robotica-2023_chocachoca_src.util	8f4f4dfe881aafab
+0	966	1695230651584223468	src/chocachoca_autogen/timestamp	3280c06b69792035
+0	966	1695230651584223468	src/chocachoca_autogen/mocs_compilation.cpp	3280c06b69792035
+0	966	1695230651584223468	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/timestamp	3280c06b69792035
+0	966	1695230651584223468	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/mocs_compilation.cpp	3280c06b69792035
+966	975	1695230651596223474	src/Lidar3D.cpp	d0ed110c68361088
+966	975	1695230651596223474	src/Lidar3D.h	d0ed110c68361088
+966	975	1695230651596223474	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/Lidar3D.cpp	d0ed110c68361088
+966	975	1695230651596223474	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/Lidar3D.h	d0ed110c68361088
+966	977	1695230651600223479	src/ui_mainUI.h	6b06ea7216c9def1
+966	977	1695230651600223479	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/ui_mainUI.h	6b06ea7216c9def1
+966	985	1695230651608223484	src/CommonBehavior.cpp	3993dd4ef1a3b35
+966	985	1695230651608223484	src/CommonBehavior.h	3993dd4ef1a3b35
+966	985	1695230651608223484	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.cpp	3993dd4ef1a3b35
+966	985	1695230651608223484	/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.h	3993dd4ef1a3b35
+986	3514	1695230654132225177	src/CMakeFiles/chocachoca.dir/home/robocomp/robocomp/classes/sigwatch/sigwatch.cpp.o	32f939a3f7210f88
+987	4690	1695230655308225967	src/CMakeFiles/chocachoca.dir/Lidar3D.cpp.o	2f807a0d560c4611
+987	5132	1695230655748226267	src/CMakeFiles/chocachoca.dir/CommonBehavior.cpp.o	91a7c1ebbf424963
+986	5170	1695230655788226293	src/CMakeFiles/chocachoca.dir/home/robocomp/robocomp/classes/qlog/qlog.cpp.o	e11370922652a9f8
+985	8591	1695230659208228613	src/CMakeFiles/chocachoca.dir/home/robocomp/robocomp/classes/rapplication/rapplication.cpp.o	7703ed95e55f1e76
+985	10922	1695230661540230211	src/CMakeFiles/chocachoca.dir/specificmonitor.cpp.o	899cfd1fb2a47443
+986	11399	1695230662016230538	src/CMakeFiles/chocachoca.dir/genericmonitor.cpp.o	1d6e45c5c8aa0589
+986	12036	1695230662656230978	src/CMakeFiles/chocachoca.dir/commonbehaviorI.cpp.o	9739404ddcd5242d
