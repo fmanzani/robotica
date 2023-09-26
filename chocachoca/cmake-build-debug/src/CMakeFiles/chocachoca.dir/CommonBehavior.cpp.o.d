@@ -1,7 +1,7 @@
 src/CMakeFiles/chocachoca.dir/CommonBehavior.cpp.o: \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.cpp \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/CommonBehavior.cpp \
  /usr/include/stdc-predef.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/CommonBehavior.h \
  /usr/include/IceUtil/PushDisableWarnings.h /usr/include/Ice/ProxyF.h \
  /usr/include/Ice/Config.h /usr/include/IceUtil/Config.h \
  /usr/include/c++/11/stdlib.h /usr/include/c++/11/cstdlib \

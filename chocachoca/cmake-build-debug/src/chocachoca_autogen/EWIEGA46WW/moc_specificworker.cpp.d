@@ -1,10 +1,10 @@
-/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/EWIEGA46WW/moc_specificworker.cpp: /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/specificworker.h \
-  /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/moc_predefs.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/Lidar3D.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/ui_mainUI.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3-robotica-2023/chocachoca/src/config.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3-robotica-2023/chocachoca/src/genericworker.h \
+/home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/chocachoca_autogen/EWIEGA46WW/moc_specificworker.cpp: /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/specificworker.h \
+  /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/chocachoca_autogen/moc_predefs.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/CommonBehavior.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/Lidar3D.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/ui_mainUI.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/config.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/genericworker.h \
   /home/usuario/robocomp_ws/src/robocomp/robocomp_core/classes/qlog/qlog.h \
   /usr/include/GL/gl.h \
   /usr/include/Ice/AsyncResult.h \

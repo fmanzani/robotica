@@ -1,8 +1,8 @@
 src/CMakeFiles/chocachoca.dir/specificmonitor.cpp.o: \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/specificmonitor.cpp \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/specificmonitor.cpp \
  /usr/include/stdc-predef.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/specificmonitor.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/genericmonitor.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/specificmonitor.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/genericmonitor.h \
  /usr/include/Ice/Ice.h /usr/include/IceUtil/PushDisableWarnings.h \
  /usr/include/Ice/Config.h /usr/include/IceUtil/Config.h \
  /usr/include/c++/11/stdlib.h /usr/include/c++/11/cstdlib \
@@ -753,10 +753,10 @@ src/CMakeFiles/chocachoca.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qwineventnotifier.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qxmlstream.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtcoreversion.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/genericworker.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/config.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/genericworker.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/config.h \
  /home/robocomp/robocomp/classes/qlog/qlog.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/src/./config.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/src/./config.h \
  /usr/include/boost/format.hpp /usr/include/boost/detail/workaround.hpp \
  /usr/include/boost/config/workaround.hpp /usr/include/boost/config.hpp \
  /usr/include/boost/config/user.hpp \
@@ -1144,7 +1144,7 @@ src/CMakeFiles/chocachoca.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiversion.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/ui_mainUI.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/ui_mainUI.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
@@ -1153,5 +1153,5 @@ src/CMakeFiles/chocachoca.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/CommonBehavior.h \
- /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/Lidar3D.h
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/CommonBehavior.h \
+ /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/Lidar3D.h

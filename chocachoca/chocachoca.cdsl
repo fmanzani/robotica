@@ -6,7 +6,6 @@ Component chocachoca
     {
         requires Lidar3D;
     };
-
     language Cpp11;
     gui Qt(QWidget);
 };

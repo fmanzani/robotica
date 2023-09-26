@@ -1,5 +1,5 @@
-/home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/include/moc_sigwatch.cpp: /home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
-  /home/usuario/robocomp/components/grupo3-robotica-2023/chocachoca/cmake-build-debug/src/chocachoca_autogen/moc_predefs.h \
+/home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/chocachoca_autogen/include/moc_sigwatch.cpp: /home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
+  /home/usuario/robocomp/components/robotica-grupo3/chocachoca/cmake-build-debug/src/chocachoca_autogen/moc_predefs.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
