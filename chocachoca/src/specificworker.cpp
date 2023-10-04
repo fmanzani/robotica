@@ -82,18 +82,23 @@ void SpecificWorker::compute()
 {
     try
     {
-        auto ldata = lidar3d_proxy->getLidarData("pearl", 0, 360, 1);
-        qInfo() <<ldata.points.size();
+        auto ldata = lidar3d_proxy->getLidarData("bpearl", 0, 2*M_PI, 1);
+        //qInfo() <<ldata.points.size();
         const auto &points = ldata.points;
         if(points.empty()) return;
 
-        draw_lidar(ldata.points, viewer);
+        //Dibujamos los puntos
+        RoboCompLidar3D::TPoints filtered_points;
+        std::ranges::copy_if(ldata.points, std::back_inserter(filtered_points), [](auto &p) {return p.z < 2000;});
+        draw_lidar(filtered_points, viewer);
+
+        // Control
 
         int offset = points.size()/2-points.size()/5;
         auto min_elem = std::min(points.begin()+offset, points.end()-offset,
-                                               [](auto a, auto b) {return (a->x*a->x+a->y*a->y+a->z*a->z) < (b->x*b->x+b->y*b->y+b->z*b->z);});
+                                               [](auto a, auto b) {return std::hypot(a->x, +a->y, a->z) < std::hypot(b->x, b->y, b->z);});
 
-        //qInfo() << min_elem->x << min_elem->y << min_elem->z;
+        qInfo() << min_elem->x << min_elem->y << min_elem->z;
 
 
     }
@@ -113,14 +118,16 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
 {
     static std::vector<QGraphicsItem*> borrar;
     //Limpiamos el vector borrar
-    for(auto &b: borrar)
+    for(auto &b: borrar) {
         viewer->scene.removeItem(b);
+        delete b;
+    }
     borrar.clear();
 
     //Pintamos los puntos alrededor del robot
     for(const auto &p: points){
         auto point = viewer->scene.addRect(-25, -25, 50, 50, QPen(QColor("blue")), QBrush(QColor("blue")));
-        point->setPos(p.x*1000, p.y*1000);
+        point->setPos(p.x, p.y);
         qInfo() << p.x << p.y;
         borrar.push_back(point);
     }
