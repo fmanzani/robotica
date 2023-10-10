@@ -92,14 +92,30 @@ void SpecificWorker::compute()
         std::ranges::copy_if(ldata.points, std::back_inserter(filtered_points), [](auto &p) {return p.z < 2000;});
         draw_lidar(filtered_points, viewer);
 
-        // Control
+        // Get minimun distance points
 
         int offset = points.size()/2-points.size()/5;
-        auto min_elem = std::min(points.begin()+offset, points.end()-offset,
-                                               [](auto a, auto b) {return std::hypot(a->x, +a->y, a->z) < std::hypot(b->x, b->y, b->z);});
+        auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
+                                               [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
 
-        qInfo() << min_elem->x << min_elem->y << min_elem->z;
-
+        const float MIN_DISTANCE = 1000;
+        qInfo() << std::hypot(min_elem->x, min_elem->y);
+        if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE){
+            try {
+                // Se para el robot y gira
+                omnirobot_proxy->setSpeedBase(0,0,0.5);
+            }
+            catch (const Ice::Exception &e) {
+                std::cout << "Error reading from Camera" << e << std::endl;
+            }
+        }else{
+            try {
+                //enciende el robot
+                omnirobot_proxy->setSpeedBase(1000/1000.f, 0, 0);
+            } catch (const Ice::Exception &e) {
+                std::cout << "Error reading from Camera" << e << std::endl;
+            }
+        }
 
     }
     catch(const Ice::Exception &e){
@@ -128,7 +144,7 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
     for(const auto &p: points){
         auto point = viewer->scene.addRect(-25, -25, 50, 50, QPen(QColor("blue")), QBrush(QColor("blue")));
         point->setPos(p.x, p.y);
-        qInfo() << p.x << p.y;
+        //qInfo() << p.x << p.y;
         borrar.push_back(point);
     }
 }
