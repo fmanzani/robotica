@@ -92,29 +92,17 @@ void SpecificWorker::compute()
         std::ranges::copy_if(ldata.points, std::back_inserter(filtered_points), [](auto &p) {return p.z < 2000;});
         draw_lidar(filtered_points, viewer);
 
-        // Get minimun distance points
-
-        int offset = points.size()/2-points.size()/5;
-        auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
-                                               [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
-
-        const float MIN_DISTANCE = 1000;
-        qInfo() << std::hypot(min_elem->x, min_elem->y);
-        if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE){
-            try {
-                // Se para el robot y gira
-                omnirobot_proxy->setSpeedBase(0,0,0.5);
-            }
-            catch (const Ice::Exception &e) {
-                std::cout << "Error reading from Camera" << e << std::endl;
-            }
-        }else{
-            try {
-                //enciende el robot
-                omnirobot_proxy->setSpeedBase(1000/1000.f, 0, 0);
-            } catch (const Ice::Exception &e) {
-                std::cout << "Error reading from Camera" << e << std::endl;
-            }
+        switch(estado)
+        {
+            case Estado::IDLE:
+                break;
+            case Estado::FOLLOW_WALL:
+                break;
+            case Estado::STRAIGHT_LINE:
+                straight_line(const_cast<RoboCompLidar3D::TPoints &>(points));
+                break;
+            case Estado::SPIRAL:
+                break;
         }
 
     }
@@ -146,6 +134,47 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
         point->setPos(p.x, p.y);
         //qInfo() << p.x << p.y;
         borrar.push_back(point);
+    }
+
+    if(linea != nullptr){
+        viewer->scene.removeItem(linea);
+        linea = nullptr;
+    }
+
+    int offset = points.size()/2-points.size()/5;
+    RoboCompLidar3D::TPoint punto = points[offset];
+    RoboCompLidar3D::TPoint robot = points[0];
+    double con = atan2(punto.y, punto.x);
+    linea = viewer->scene.addLine(robot.x, robot.y, punto.x*con, punto.y*con, QPen(QColor("red"), 40));
+
+    //QLineF
+    //viewer->scene.addLine();
+
+}
+
+void SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
+
+    int offset = points.size()/2-points.size()/5;
+    auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
+                                     [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
+
+    const float MIN_DISTANCE = 1000;
+    qInfo() << std::hypot(min_elem->x, min_elem->y);
+    if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE){
+        try {
+            // Se para el robot y gira
+            omnirobot_proxy->setSpeedBase(0,0,0.5);
+        }
+        catch (const Ice::Exception &e) {
+            std::cout << "Error reading from Camera" << e << std::endl;
+        }
+    }else{
+        try {
+            //enciende el robot
+            omnirobot_proxy->setSpeedBase(1000/1000.f, 0, 0);
+        } catch (const Ice::Exception &e) {
+            std::cout << "Error reading from Camera" << e << std::endl;
+        }
     }
 }
 

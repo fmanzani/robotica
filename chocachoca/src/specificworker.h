@@ -30,6 +30,7 @@
 #include <genericworker.h>
 #include <abstract_graphic_viewer/abstract_graphic_viewer.h>
 #include <ranges>
+#include <cmath>
 
 class SpecificWorker : public GenericWorker
 {
@@ -45,11 +46,15 @@ public slots:
 	void compute();
 	int startup_check();
 	void initialize(int period);
+    void straight_line(RoboCompLidar3D::TPoints &points);
 private:
 	bool startup_check_flag;
     AbstractGraphicViewer* viewer;
-
+    QGraphicsLineItem* linea = nullptr;
     void draw_lidar(const RoboCompLidar3D::TPoints &points, AbstractGraphicViewer *viewer);
+
+    enum class Estado {IDLE, FOLLOW_WALL, STRAIGHT_LINE, SPIRAL};
+    Estado estado = Estado::STRAIGHT_LINE;
 };
 
 #endif
