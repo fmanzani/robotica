@@ -46,15 +46,24 @@ public slots:
 	void compute();
 	int startup_check();
 	void initialize(int period);
-    void straight_line(RoboCompLidar3D::TPoints &points);
+
+
 private:
+    double t = 1;
+    double rot = 1;
 	bool startup_check_flag;
+    bool cambiar = false;
     AbstractGraphicViewer* viewer;
     QGraphicsLineItem* linea = nullptr;
     void draw_lidar(const RoboCompLidar3D::TPoints &points, AbstractGraphicViewer *viewer);
-
     enum class Estado {IDLE, FOLLOW_WALL, STRAIGHT_LINE, SPIRAL};
-    Estado estado = Estado::STRAIGHT_LINE;
+    Estado estado = Estado::FOLLOW_WALL;
+    struct robotSpeed {float adv;float side; float rot;};
+    robotSpeed rs;
+    std::tuple<Estado, robotSpeed> straight_line(RoboCompLidar3D::TPoints &points);
+    std::tuple<Estado, robotSpeed> stop();
+    std::tuple<Estado, robotSpeed> follow_wall(RoboCompLidar3D::TPoints &points);
+    std::tuple<Estado, robotSpeed> spiral(RoboCompLidar3D::TPoints &points);
 };
 
 #endif

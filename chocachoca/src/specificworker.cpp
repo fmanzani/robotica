@@ -95,13 +95,16 @@ void SpecificWorker::compute()
         switch(estado)
         {
             case Estado::IDLE:
+                stop();
                 break;
             case Estado::FOLLOW_WALL:
+                follow_wall(const_cast<RoboCompLidar3D::TPoints &>(points));
                 break;
             case Estado::STRAIGHT_LINE:
                 straight_line(const_cast<RoboCompLidar3D::TPoints &>(points));
                 break;
             case Estado::SPIRAL:
+                spiral(const_cast<RoboCompLidar3D::TPoints &>(points));
                 break;
         }
 
@@ -140,23 +143,21 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
         viewer->scene.removeItem(linea);
         linea = nullptr;
     }
-
+    /*
     int offset = points.size()/2-points.size()/5;
     RoboCompLidar3D::TPoint punto = points[offset];
     RoboCompLidar3D::TPoint robot = points[0];
     double con = atan2(punto.y, punto.x);
     linea = viewer->scene.addLine(robot.x, robot.y, punto.x*con, punto.y*con, QPen(QColor("red"), 40));
-
-    //QLineF
-    //viewer->scene.addLine();
-
+    */
 }
 
-void SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
+std::tuple<SpecificWorker::Estado, SpecificWorker::robotSpeed> SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
 
     int offset = points.size()/2-points.size()/5;
     auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
                                      [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
+    robotSpeed rs;
 
     const float MIN_DISTANCE = 1000;
     qInfo() << std::hypot(min_elem->x, min_elem->y);
@@ -164,6 +165,7 @@ void SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
         try {
             // Se para el robot y gira
             omnirobot_proxy->setSpeedBase(0,0,0.5);
+            rs = robotSpeed{0,0,0.5};
         }
         catch (const Ice::Exception &e) {
             std::cout << "Error reading from Camera" << e << std::endl;
@@ -172,12 +174,84 @@ void SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
         try {
             //enciende el robot
             omnirobot_proxy->setSpeedBase(1000/1000.f, 0, 0);
+            rs = robotSpeed{1000/1000.f,0,0};
         } catch (const Ice::Exception &e) {
             std::cout << "Error reading from Camera" << e << std::endl;
         }
     }
+
+    return std::make_tuple(Estado::STRAIGHT_LINE, rs);
 }
 
+std::tuple<SpecificWorker::Estado, SpecificWorker::robotSpeed> SpecificWorker::stop() {
+
+
+
+}
+
+std::tuple<SpecificWorker::Estado, SpecificWorker::robotSpeed> SpecificWorker::follow_wall(RoboCompLidar3D::TPoints &points) {
+
+    int offset = points.size()/2-points.size()/5;
+    auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
+                                     [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
+    robotSpeed rs;
+
+    const float MIN_DISTANCE_Y = 500;
+    const float MIN_DISTANCE_X = 550;
+    qInfo() << std::hypot(min_elem->x, min_elem->y);
+    RoboCompLidar3D::TPoint punto_inicio;
+    qInfo() << min_elem->x << min_elem->y << min_elem->theta;
+
+    if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE_Y){
+             try {
+                 omnirobot_proxy->setSpeedBase(0, M_PI/4, 1);
+                 rs = robotSpeed{0, M_PI/4, 1};
+             }
+             catch (const Ice::Exception &e) {
+                 std::cout << "Error reading from Camera" << e << std::endl;
+             }
+    }else{
+        try {
+            //enciende el robot
+            omnirobot_proxy->setSpeedBase(1000/1000.f, 0, 0);
+            rs = robotSpeed{1000/1000.f,0,0};
+
+        } catch (const Ice::Exception &e) {
+            std::cout << "Error reading from Camera" << e << std::endl;
+        }
+    }
+    if(min_elem->x > MIN_DISTANCE_X){
+        omnirobot_proxy->setSpeedBase(0, -M_PI/4, -1);
+        rs = robotSpeed{0, -M_PI/4, -1};
+    }
+
+
+    return std::make_tuple(Estado::FOLLOW_WALL, rs);
+
+}
+
+std::tuple<SpecificWorker::Estado, SpecificWorker::robotSpeed> SpecificWorker::spiral(RoboCompLidar3D::TPoints &points) {
+
+    int offset = points.size()/2-points.size()/5;
+    auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
+                                     [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
+
+    qInfo() << min_elem->x << " " << min_elem->y;
+
+    omnirobot_proxy->setSpeedBase(0, M_PI/(10-t), rot);
+    if(min_elem->x > 2400 && !cambiar) {
+        rot *= 0.99;
+        t += 0.05;
+        cambiar = true;
+    }
+    if(min_elem->x < 2400 && cambiar){
+        cambiar = false;
+    }
+    qInfo() << "t: " << t << "Giro: " << M_PI/(8-t) << "r: " << rot;
+
+    rs = robotSpeed{0, M_PI/2, 1};
+    return std::make_tuple(Estado::SPIRAL, rs);
+}
 
 
 
