@@ -51,14 +51,21 @@ public slots:
 
 private:
     double t = 2;
-    double rot = 1;
+    double rot = 2;
 	bool startup_check_flag;
-    RoboCompLidar3D::TPoint puntoIni;
+    int giros = 0;
+    int giros_follow_wall = 0;
+    RoboCompLidar3D::TPoint punto;
+    int repeticion = 0;
     bool acabar = false;
+    int giro = 0;
+    int aumento = 0.008;
     bool ini = false;
     int count = 0;
-    float MIN_DISTANCE_Y = 400;
-    float MIN_DISTANCE_X = 500;
+    bool spiralSL = false;
+    int pasarEstado = 0;
+    float MIN_DISTANCE_Y = 470;
+    float MIN_DISTANCE_X = 570;
     AbstractGraphicViewer* viewer;
     QGraphicsLineItem* linea = nullptr;
     void draw_lidar(const RoboCompLidar3D::TPoints &points, AbstractGraphicViewer *viewer);
@@ -67,6 +74,7 @@ private:
     Estado straight_line(RoboCompLidar3D::TPoints &points);
     Estado follow_wall(RoboCompLidar3D::TPoints &points);
     Estado spiral(RoboCompLidar3D::TPoints &points);
+    void comprobarBloqueo(RoboCompLidar3D::TPoint &min_elem);
 };
 
 #endif
