@@ -1,0 +1,15 @@
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/edit_cache.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/rebuild_cache.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/list_install_components.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/install.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/install/local.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/CMakeFiles/install/strip.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/ICES__home_usuario_robocomp_ws_src_robocomp_components_robotica-grupo3_chocachoca_src.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/chocachoca.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/edit_cache.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/rebuild_cache.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/list_install_components.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/install.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/install/local.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/install/strip.dir
+/home/usuario/robocomp_ws/src/robocomp/components/robotica-grupo3/chocachoca/src/CMakeFiles/chocachoca_autogen.dir
