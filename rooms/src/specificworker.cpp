@@ -17,6 +17,8 @@
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "specificworker.h"
+#include <cppitertools/sliding_window.hpp>
+#include <cppitertools/combinations.hpp>
 
 /**
 * \brief Default constructor
@@ -75,37 +77,70 @@ void SpecificWorker::initialize(int period)
 
 }
 
+SpecificWorker::Lines SpecificWorker::extract_lines(RoboCompLidar3D::TPoints points){
+
+    Lines l;
+    long unsigned int i;
+    for(i = 0; i < points.size(); i++){
+        if(points[i].z > 200 && points[i].z < 500) {
+            qInfo() << points[i].theta * 180/M_PI;
+            l.low.push_back(points[i]);
+        }else if(points[i].z > 600 && points[i].z < 800){
+            l.mid.push_back(points[i]);
+        }else if(points[i].z > 1000 && points[i].z < 1200){
+            l.high.push_back(points[i]);
+        }
+    }
+
+    return l;
+}
+
 void SpecificWorker::compute()
 {
     try
     {
-        auto ldata = lidar3d_proxy->getLidarData("bpearl", 0, 2*M_PI, 1);
+        auto ldata = lidar3d_proxy->getLidarData("helios", 0, 2*M_PI, 1);
         //qInfo() <<ldata.points.size();
         const auto &points = ldata.points;
         if(points.empty()) return;
 
         //Dibujamos los puntos
-        RoboCompLidar3D::TPoints filtered_points;
-        std::ranges::copy_if(ldata.points, std::back_inserter(filtered_points), [](auto &p) {return p.z < 2000;});
-        draw_lidar(filtered_points, viewer);
+        //RoboCompLidar3D::TPoints filtered_points;
 
-        switch(estado)
-        {
-            case Estado::FOLLOW_WALL:
-                estado = follow_wall(const_cast<RoboCompLidar3D::TPoints &>(points));
-                break;
-            case Estado::STRAIGHT_LINE:
-                estado = straight_line(const_cast<RoboCompLidar3D::TPoints &>(points));
-                break;
-            case Estado::SPIRAL:
-                estado = spiral(const_cast<RoboCompLidar3D::TPoints &>(points));
-                break;
-        }
+        SpecificWorker::Lines lines;
+        lines = extract_lines(ldata.points);
 
+        //std::ranges::copy_if(ldata.points, std::back_inserter(filtered_points), [](auto &p) {return p.z < 2000;});
+        draw_lidar(lines.mid, viewer);
+        auto peaks = extract_peaks(lines);
+        //draw_doors(peaks.low, viewer);
+        auto doors = get_doors(peaks);
+        draw_doors(doors, viewer);
     }
     catch(const Ice::Exception &e){
         std::cout << "Error";
     }
+}
+
+SpecificWorker::Lines SpecificWorker::extract_peaks(const SpecificWorker::Lines &lines){
+
+    Lines peaks;
+    const float THRES_PEAK = 1000;
+
+    for(const auto &both: iter::sliding_window(lines.low, 2)){
+        if(fabs(both[1].r - both[0].r) > THRES_PEAK){
+            peaks.low.push_back(both[0]);
+        }
+    }for(const auto &both: iter::sliding_window(lines.mid, 2)){
+        if(fabs(both[1].r - both[0].r) > THRES_PEAK){
+            peaks.mid.push_back(both[0]);
+        }
+    }for(const auto &both: iter::sliding_window(lines.high, 2)){
+        if(fabs(both[1].r - both[0].r) > THRES_PEAK){
+            peaks.high.push_back(both[0]);
+        }
+    }
+    return peaks;
 }
 
 int SpecificWorker::startup_check()
@@ -122,8 +157,7 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
     for(auto &b: borrar) {
         viewer->scene.removeItem(b);
         delete b;
-    }
-    borrar.clear();
+    }    borrar.clear();
 
     //Pintamos los puntos alrededor del robot
     for(const auto &p: points){
@@ -138,177 +172,65 @@ void SpecificWorker::draw_lidar(const RoboCompLidar3D::TPoints &points, Abstract
         linea = nullptr;
     }
 }
+void SpecificWorker::draw_doors(const SpecificWorker::Doors doors, AbstractGraphicViewer *viewer) {
 
-SpecificWorker::Estado SpecificWorker::straight_line(RoboCompLidar3D::TPoints &points) {
+    static std::vector<QGraphicsItem*> borrar;
+    //Limpiamos el vector borrar
+    for(auto &b: borrar) {
+        viewer->scene.removeItem(b);
+        delete b;
+    }    borrar.clear();
 
-    int offset = points.size()/2-points.size()/5;
-    auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
-                                     [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
-    float rotacion = 3;
-
-    const float MIN_DISTANCE = 600;
-    qInfo() << std::hypot(min_elem->x, min_elem->y);
-    if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE){
-        try {
-            if(giro > 50) {
-                omnirobot_proxy->setSpeedBase(0, 0, rotacion);
-            }else{
-                omnirobot_proxy->setSpeedBase(0, 0, -rotacion);
-            }
-            if(giro > 100){
-                giro = 0;
-            }
-            giro++;
-            giros++;
-            qInfo() << "Giros: " << giros;
-        }
-        catch (const Ice::Exception &e) {
-            std::cout << "Error reading from Camera" << e << std::endl;
-        }
-    }else{
-        try {
-            omnirobot_proxy->setSpeedBase(2000/1000.f, 0, 0);
-        } catch (const Ice::Exception &e) {
-            std::cout << "Error reading from Camera" << e << std::endl;
-        }
+    for(const auto &d : doors) {
+        auto point = viewer->scene.addRect(-50, -50, 100, 100, QPen(QColor("green")), QBrush(QColor("green")));
+        point->setPos(d.left.x, d.left.y);
+        borrar.push_back(point);
+        point = viewer->scene.addRect(-50, -50, 100, 100, QPen(QColor("green")), QBrush(QColor("green")));
+        point->setPos(d.right.x, d.right.y);
+        borrar.push_back(point);
+        auto line = viewer->scene.addLine(d.left.x, d.left.y, d.right.x, d.right.y, QPen(QColor("green"), 50));
+        borrar.push_back(line);
     }
-    if(giros > 35 && !spiralSL){
-        if(std::hypot(min_elem->x, min_elem->y) > 1800){
-            spiralSL = true;
-            return Estado::SPIRAL;
-        }
+    if(linea != nullptr){
+        viewer->scene.removeItem(linea);
+        linea = nullptr;
     }
-    if(giros > 60) {
-        giros = 1;
-        int randomNumber = rand() % 100 + 1;
-        qInfo() << "Espiral: " << randomNumber;
-        if(randomNumber < 35){
-            return Estado::SPIRAL;
-        }else{
-            return Estado::FOLLOW_WALL;
-        }
 
-    }
-    comprobarBloqueo(*min_elem);
-    return Estado::STRAIGHT_LINE;
 }
 
-bool checkRandomNumber() {
-    int randomNumber = rand() % 100 + 1; // Genera un número aleatorio entre 1 y 1000
-    qInfo() << "Random: " << randomNumber;
-    return (randomNumber >= 10 && randomNumber <= 20);
-}
+SpecificWorker::Doors SpecificWorker::get_doors(const SpecificWorker::Lines &peaks) {
 
-SpecificWorker::Estado SpecificWorker::follow_wall(RoboCompLidar3D::TPoints &points) {
+    Doors doors;
 
-    int offset = points.size()/2-points.size()/5;
-    auto min_elem = std::min_element(points.begin()+offset, points.end()-offset,
-                                     [](auto a, auto b) {return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);});
+    auto dist = [](auto a, auto b){
+        qInfo() << std::hypot(a.x-b.x, a.y-b.y);
+        return std::hypot(a.x-b.x, a.y-b.y);
+    };
 
-    qInfo() << "x: "<< min_elem->x << "y: " <<min_elem->y << "Valor: " << std::hypot(min_elem->x, min_elem->y);;
+    const float THRES_DOOR = 500;
 
-    if(std::hypot(min_elem->x, min_elem->y) < MIN_DISTANCE_Y){
-        try {
-            omnirobot_proxy->setSpeedBase(1, M_PI/4, 3);
-        }
-        catch (const Ice::Exception &e) {
-            std::cout << "Error reading from Camera" << e << std::endl;
-        }
-    }else{
-        try {
-            //enciende el robot
-            omnirobot_proxy->setSpeedBase(2000/1000.f, 0, 0);
-
-        } catch (const Ice::Exception &e) {
-            std::cout << "Error reading from Camera" << e << std::endl;
-        }
-    }
-    if(min_elem->x > MIN_DISTANCE_X){
-        omnirobot_proxy->setSpeedBase(0, -M_PI/4, -1.2);
-    }
-    MIN_DISTANCE_Y += 0.7;
-    MIN_DISTANCE_X += 0.7;
-    qInfo() << "DISTANCIAS: "<<MIN_DISTANCE_Y << " " << MIN_DISTANCE_X;
-
-    srand(time(0));
-
-    if(pasarEstado > 200){
-        if(MIN_DISTANCE_Y < 1100) {
-            if (checkRandomNumber()) {
-                pasarEstado = 0;
-                return Estado::STRAIGHT_LINE;
-            }
-        }else{
-            int randomNumber = rand() % 100 + 1;
-            if(randomNumber < 40){
-                return Estado::SPIRAL;
-            }else{
-                return Estado::STRAIGHT_LINE;
+    auto near_door = [&doors, dist, THRES_DOOR](auto d){
+        for(auto &&old: doors){
+            qInfo() << dist(old.left, d.left) << dist(old.right, d.right) << dist(old.right, d.left) << dist(old.left, d.right);
+            if(dist(old.left, d.left) < THRES_DOOR or dist(old.right, d.right) < THRES_DOOR or dist(old.right, d.left) < THRES_DOOR or dist(old.left, d.right) < THRES_DOOR){
+                return true;
             }
         }
-    }else{
-        pasarEstado++;
-    }
+        return false;
+    };
 
-
-    comprobarBloqueo(*min_elem);
-    return Estado::FOLLOW_WALL;
-}
-
-void SpecificWorker::comprobarBloqueo(RoboCompLidar3D::TPoint &min_elem){
-    if(min_elem.x != punto.x && min_elem.y != punto.y){
-        punto.x = min_elem.x;
-        punto.y = min_elem.y;
-        repeticion = 0;
-    }else{
-        repeticion++;
-        qInfo() << "Repeticion: " << repeticion;
-    }
-    if(repeticion > 4){
-        for(int i = 0; i < 10; i++){
-            omnirobot_proxy->setSpeedBase(-2, 0, 0);
+    for(auto &par : peaks.mid | iter::combinations(2)){
+        if(dist(par[0], par[1]) < 1400 && dist(par[0], par[1]) > 500){
+            auto door = Door(par[0], par[1]);
+            if(!near_door(door)) {
+                doors.emplace_back(Door{par[0], par[1]});
+            }
         }
     }
+
+    return doors;
 }
 
-SpecificWorker::Estado SpecificWorker::spiral(RoboCompLidar3D::TPoints &points) {
-
-    int offset = points.size() / 2 - points.size() / 5;
-    auto min_elem = std::min_element(points.begin() + offset, points.end() - offset,
-                                     [](auto a, auto b) {
-                                         return std::hypot(a.x, a.y, a.z) < std::hypot(b.x, b.y, b.z);
-                                     });
-
-    qInfo() << "Entro en SPIRAL";
-    Estado estado = Estado::SPIRAL;
-
-    if(!acabar) {
-        qInfo() << min_elem->x << " " << min_elem->y << "Valor: " << std::hypot(min_elem->x, min_elem->y);
-
-        omnirobot_proxy->setSpeedBase(0, M_PI / (10 - t), rot);
-        rot *= 0.999;
-        t += 0.05;
-
-        qInfo() << "t: " << t << "Giro: " << M_PI / (8 - t) << "r: " << rot;
-
-        if (t > 8.2) {
-            omnirobot_proxy->setSpeedBase(0, 0, 0);
-            acabar = true;
-        }
-        if(abs(min_elem->x) < 50){
-            //omnirobot_proxy->setSpeedBase(-2, 2, 1.57);
-            //acabar = true;
-        }
-    }else{
-        qInfo() << "Valor de  Y: " << min_elem->y;
-        t = 2;
-        rot = 2;
-        estado = Estado::FOLLOW_WALL;
-        acabar = false;
-    }
-
-    return estado;
-}
 
 /**************************************/
 // From the RoboCompLidar3D you can call this methods:

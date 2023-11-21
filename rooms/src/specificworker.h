@@ -48,33 +48,22 @@ public slots:
 	void initialize(int period);
 
 
-
 private:
-    double t = 2;
-    double rot = 2;
+    struct Lines {
+        RoboCompLidar3D::TPoints high, mid, low;
+    };
+    struct Door {
+        RoboCompLidar3D::TPoint left, right;
+    };
+    using Doors = std::vector<Door>;
+    SpecificWorker::Lines extract_peaks(const SpecificWorker::Lines &lines);
+    Lines extract_lines(RoboCompLidar3D::TPoints points);
 	bool startup_check_flag;
-    int giros = 0;
-    int giros_follow_wall = 0;
-    RoboCompLidar3D::TPoint punto;
-    int repeticion = 0;
-    bool acabar = false;
-    int giro = 0;
-    int aumento = 0.008;
-    bool ini = false;
-    int count = 0;
-    bool spiralSL = false;
-    int pasarEstado = 0;
-    float MIN_DISTANCE_Y = 470;
-    float MIN_DISTANCE_X = 570;
     AbstractGraphicViewer* viewer;
     QGraphicsLineItem* linea = nullptr;
     void draw_lidar(const RoboCompLidar3D::TPoints &points, AbstractGraphicViewer *viewer);
-    enum class Estado {FOLLOW_WALL, STRAIGHT_LINE, SPIRAL};
-    Estado estado = Estado::SPIRAL;
-    Estado straight_line(RoboCompLidar3D::TPoints &points);
-    Estado follow_wall(RoboCompLidar3D::TPoints &points);
-    Estado spiral(RoboCompLidar3D::TPoints &points);
-    void comprobarBloqueo(RoboCompLidar3D::TPoint &min_elem);
+    void draw_doors(const SpecificWorker::Doors doors, AbstractGraphicViewer *viewer);
+    Doors get_doors(const Lines &peaks);
 };
 
 #endif
